@@ -39,6 +39,11 @@ def get_wind_angle(v1, v2):
     return angle_degrees
 
 
+def wind_force(angle):
+    # Calculate wind force based on the given curve
+    return np.abs(np.cos(np.radians(angle)))
+
+
 def get_course_rating(course, forecast):
     course_rating = 0
 
@@ -53,12 +58,13 @@ def get_course_rating(course, forecast):
 
         ship_direction_vector = (delta_latitude, delta_longitude)
         wind_direction_vector = forecast(
-            latitudes=current_checkpoint.latitude, longitudes=current_checkpoint.longitude, times=3
+            latitudes=current_checkpoint.latitude, longitudes=current_checkpoint.longitude, times=1
         )
         wind_angle = get_wind_angle(ship_direction_vector, wind_direction_vector)
-        if 100 > wind_angle or wind_angle >= 250:
-            course_rating += 1
-    return course_rating
+        wind_rating = wind_force(wind_angle)
+        course_rating += wind_rating
+
+    return course_rating / (len(course) - 1)
 
 
 class Bot:
@@ -67,28 +73,29 @@ class Bot:
     """
 
     def __init__(self):
-        self.team = "TeamName"  # This is your team name
+        self.team = "Alpitronic"  # This is your team name
+        self.course_rating_done = False
         # This is the course that the ship has to follow
         self.course = [
             Checkpoint(latitude=46.51526380018685, longitude=-2.106954221077432, radius=3),
             Checkpoint(latitude=47.80314416647888, longitude=-5.052251381828896, radius=10),
             Checkpoint(latitude=59.47704024721139, longitude=-45.43535463804069, radius=10),
             Checkpoint(latitude=61.29777135363086, longitude=-50.50614648992773, radius=10),
-            Checkpoint(latitude=74.01161191565814, longitude=-78.7927999147886, radius=10),
-            Checkpoint(latitude=74.25173507721657, longitude=-96.65858010074633, radius=10),
-            Checkpoint(latitude=73.72498541615349, longitude=-111.926159581506, radius=10),
+            Checkpoint(latitude=74.01161191565813, longitude=-78.7927999147886, radius=10),
+            Checkpoint(latitude=74.25173507721656, longitude=-96.65858010074633, radius=10),
+            Checkpoint(latitude=73.72498541615348, longitude=-111.926159581506, radius=10),
             Checkpoint(latitude=74.40777471749568, longitude=-115.8822170582781, radius=10),
             Checkpoint(latitude=74.75897704017419, longitude=-120.1465931751061, radius=10),
             Checkpoint(latitude=75.04381102956535, longitude=-125.4345462396673, radius=10),
             Checkpoint(latitude=71.40547802179384, longitude=-127.951341529295, radius=10),
             Checkpoint(latitude=69.83455259335703, longitude=-137.1310063552145, radius=10),
-            Checkpoint(latitude=70.73255432537843, longitude=-148.2239948674155, radius=1),
-            Checkpoint(latitude=71.70038417142847, longitude=-157.2544217758774, radius=1),
-            Checkpoint(latitude=69.35823694650743, longitude=-166.6847073961097, radius=1),
-            Checkpoint(latitude=65.04357281610142, longitude=-169.891701898396, radius=1),
-            Checkpoint(latitude=62.75645054920246, longitude=-167.6184920731297, radius=1),
-            Checkpoint(latitude=48.69476863709392, longitude=-170.0381425172147, radius=1),
-            Checkpoint(latitude=19.22145017743467, longitude=-178.8238574058236, radius=1),
+            Checkpoint(latitude=70.73255432537843, longitude=-148.2239948674155, radius=10),
+            Checkpoint(latitude=71.70038417142847, longitude=-157.2544217758774, radius=10),
+            Checkpoint(latitude=69.35823694650743, longitude=-166.6847073961097, radius=10),
+            Checkpoint(latitude=65.04357281610142, longitude=-169.891701898396, radius=10),
+            Checkpoint(latitude=62.75645054920246, longitude=-167.6184920731297, radius=10),
+            Checkpoint(latitude=48.69476863709392, longitude=-170.0381425172147, radius=10),
+            Checkpoint(latitude=2.806318, longitude=-168.943864, radius=1990.0),
             Checkpoint(latitude=2.783378485018821, longitude=120.2750675981632, radius=1),
             Checkpoint(latitude=-4.371808511810304, longitude=116.3937656707797, radius=1),
             Checkpoint(latitude=-4.629279687584559, longitude=114.4115097858007, radius=1),
@@ -96,7 +103,7 @@ class Bot:
             Checkpoint(latitude=-6.11001139609985, longitude=105.7870113471664, radius=1),
             Checkpoint(latitude=-6.29742096732878, longitude=105.5319416909656, radius=1),
             Checkpoint(latitude=-6.114084860396257, longitude=104.6250388648793, radius=1),
-            Checkpoint(latitude=-4.80837396250466, longitude=80.12838504403044, radius=1),
+            Checkpoint(latitude=-6.022524480367786, longitude=80.03577043127072, radius=1),
             Checkpoint(latitude=12.32364950720728, longitude=51.06186749020405, radius=1),
             Checkpoint(latitude=11.68438658686913, longitude=43.91390326465574, radius=1),
             Checkpoint(latitude=29.07795456671188, longitude=32.82494554815788, radius=1),
@@ -226,12 +233,19 @@ class Bot:
         current_position_terrain = world_map(latitudes=latitude, longitudes=longitude)
         # ===========================================================
 
-        # Get the course rating
-        course_rating_north = get_course_rating(self.course_north, forecast)
-        course_rating_panama = get_course_rating(self.course_panama, forecast)
-
-        print(course_rating_north)
-        print(course_rating_panama)
+        if not self.course_rating_done:
+            # Get the course rating
+            print("Course rating north")
+            course_rating_north = get_course_rating(self.course_north, forecast)
+            print("Course rating panama")
+            course_rating_panama = get_course_rating(self.course_panama, forecast)
+            print(f"North: {course_rating_north}, Panama: {course_rating_panama}")
+            if course_rating_north > course_rating_panama:
+                self.course = self.course_north
+            else:
+                self.course = self.course_panama
+            self.course_rating_done = True
+        self.course = self.course_north
 
         # Go through all checkpoints and find the next one to reach
         for ch in self.course:
