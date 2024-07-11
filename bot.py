@@ -39,6 +39,11 @@ def get_wind_angle(v1, v2):
     return angle_degrees
 
 
+def wind_force(angle):
+    # Calculate wind force based on the given curve
+    return np.abs(np.cos(np.radians(angle)))
+
+
 def get_course_rating(course, forecast):
     course_rating = 0
 
@@ -53,12 +58,13 @@ def get_course_rating(course, forecast):
 
         ship_direction_vector = (delta_latitude, delta_longitude)
         wind_direction_vector = forecast(
-            latitudes=current_checkpoint.latitude, longitudes=current_checkpoint.longitude, times=3
+            latitudes=current_checkpoint.latitude, longitudes=current_checkpoint.longitude, times=1
         )
         wind_angle = get_wind_angle(ship_direction_vector, wind_direction_vector)
-        if 100 > wind_angle or wind_angle >= 250:
-            course_rating += 1
-    return course_rating
+        wind_rating = wind_force(wind_angle)
+        course_rating += wind_rating
+
+    return course_rating / (len(course) - 1)
 
 
 class Bot:
@@ -68,6 +74,7 @@ class Bot:
 
     def __init__(self):
         self.team = "Alpitronic"  # This is your team name
+        self.course_rating_done = False
         # This is the course that the ship has to follow
         self.course = [
             Checkpoint(latitude=46.51526380018685, longitude=-2.106954221077432, radius=3),
@@ -115,6 +122,7 @@ class Bot:
         ]
 
         self.course_north = [
+            # 15000KM
             Checkpoint(latitude=46.51526380018685, longitude=-2.106954221077432, radius=3),
             Checkpoint(latitude=47.80314416647888, longitude=-5.052251381828896, radius=10),
             Checkpoint(latitude=59.47704024721139, longitude=-45.43535463804069, radius=10),
@@ -137,12 +145,23 @@ class Bot:
         ]
 
         self.course_panama = [
+            # 18000KM
             Checkpoint(latitude=46.47535337182985, longitude=-1.987242046570165, radius=1),
             Checkpoint(latitude=17.75395401995559, longitude=-68.53393421733739, radius=1),
             Checkpoint(latitude=9.596699224197881, longitude=-80.10762674052567, radius=1),
             Checkpoint(latitude=7.995870801960294, longitude=-79.22779328612677, radius=1),
             Checkpoint(latitude=6.481266459594321, longitude=-80.24932074214756, radius=1),
             Checkpoint(latitude=20.2091231357451, longitude=-160.6906302734677, radius=1),
+        ]
+
+        self.course_australia = [
+            # 21000KM
+            Checkpoint(latitude=-22.3682399229219, longitude=169.7716302925487, radius=1),
+            Checkpoint(latitude=-38.89756012433131, longitude=148.6584464632712, radius=1),
+            Checkpoint(latitude=-39.43712291429078, longitude=146.9397239577109, radius=1),
+            Checkpoint(latitude=-39.71964415915588, longitude=146.6436592429874, radius=1),
+            Checkpoint(latitude=-38.11473889710815, longitude=139.7076193078962, radius=1),
+            Checkpoint(latitude=-34.96547393476094, longitude=114.7356930791068, radius=1),
         ]
 
         self.course_africa = [
@@ -230,17 +249,20 @@ class Bot:
         current_position_terrain = world_map(latitudes=latitude, longitudes=longitude)
         # ===========================================================
 
-        # Get the course rating
-        course_rating_north = get_course_rating(self.course_north, forecast) / len(self.course_north)
-        course_rating_panama = get_course_rating(self.course_panama, forecast) / len(self.course_panama)
+        if not self.course_rating_done:
+            # Get the course rating
+            print("Course rating north")
+            course_rating_north = get_course_rating(self.course_north, forecast)
+            print("Course rating panama")
+            course_rating_panama = get_course_rating(self.course_panama, forecast)
+            print(f"North: {course_rating_north}, Panama: {course_rating_panama}")
+            if course_rating_north > course_rating_panama:
+                self.course = self.course_north
+            else:
+                self.course = self.course_panama
+            self.course_rating_done = True
+        self.course = self.course_north
 
-        #print(course_rating_panama, course_rating_north)
-
-        #if course_rating_north > course_rating_panama:
-        #    self.course = self.course_north
-        #else:
-        #    self.course = self.course_panama
-        self.course = self.course_africa
         # Go through all checkpoints and find the next one to reach
         for ch in self.course:
             # Compute the distance to the checkpoint
