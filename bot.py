@@ -115,6 +115,7 @@ class Bot:
         ]
 
         self.course_north = [
+            # 15000KM
             Checkpoint(latitude=46.51526380018685, longitude=-2.106954221077432, radius=3),
             Checkpoint(latitude=47.80314416647888, longitude=-5.052251381828896, radius=10),
             Checkpoint(latitude=59.47704024721139, longitude=-45.43535463804069, radius=10),
@@ -137,6 +138,7 @@ class Bot:
         ]
 
         self.course_panama = [
+            # 18000KM
             Checkpoint(latitude=46.47535337182985, longitude=-1.987242046570165, radius=1),
             Checkpoint(latitude=17.75395401995559, longitude=-68.53393421733739, radius=1),
             Checkpoint(latitude=9.596699224197881, longitude=-80.10762674052567, radius=1),
@@ -146,6 +148,7 @@ class Bot:
         ]
 
         self.course_australia = [
+            # 21000KM
             Checkpoint(latitude=-22.3682399229219, longitude=169.7716302925487, radius=1),
             Checkpoint(latitude=-38.89756012433131, longitude=148.6584464632712, radius=1),
             Checkpoint(latitude=-39.43712291429078, longitude=146.9397239577109, radius=1),
