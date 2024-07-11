@@ -22,24 +22,28 @@ class Bot:
     """
 
     def __init__(self):
-        self.team = "TeamName"  # This is your team name
+        self.team = "Alpitronic"  # This is your team name
         # This is the course that the ship has to follow
         self.course = [
-            Checkpoint(latitude=43.797109, longitude=-11.264905, radius=50),
-            Checkpoint(longitude=-29.908577, latitude=17.999811, radius=50),
-            Checkpoint(latitude=-11.441808, longitude=-29.660252, radius=50),
-            Checkpoint(longitude=-63.240264, latitude=-61.025125, radius=50),
+            Checkpoint(latitude=46.51526380018685, longitude=-2.106954221077432, radius=3),
+            Checkpoint(latitude=47.80314416647888, longitude=-5.052251381828896, radius=10),
+            Checkpoint(latitude=59.47704024721139, longitude=-45.43535463804069, radius=10),
+            Checkpoint(latitude=61.29777135363086, longitude=-50.50614648992773, radius=10),
+            Checkpoint(latitude=74.01161191565813, longitude=-78.7927999147886, radius=10),
+            Checkpoint(latitude=74.25173507721656, longitude=-96.65858010074633, radius=10),
+            Checkpoint(latitude=73.72498541615348, longitude=-111.926159581506, radius=10),
+            Checkpoint(latitude=74.40777471749568, longitude=-115.8822170582781, radius=10),
+            Checkpoint(latitude=74.75897704017419, longitude=-120.1465931751061, radius=10),
+            Checkpoint(latitude=75.04381102956535, longitude=-125.4345462396673, radius=10),
+            Checkpoint(latitude=71.40547802179384, longitude=-127.951341529295, radius=10),
+            Checkpoint(latitude=69.83455259335703, longitude=-137.1310063552145, radius=10),
+            Checkpoint(latitude=70.73255432537843, longitude=-148.2239948674155, radius=10),
+            Checkpoint(latitude=71.70038417142847, longitude=-157.2544217758774, radius=10),
+            Checkpoint(latitude=69.35823694650743, longitude=-166.6847073961097, radius=10),
+            Checkpoint(latitude=65.04357281610142, longitude=-169.891701898396, radius=10),
+            Checkpoint(latitude=62.75645054920246, longitude=-167.6184920731297, radius=10),
+            Checkpoint(latitude=48.69476863709392, longitude=-170.0381425172147, radius=10),
             Checkpoint(latitude=2.806318, longitude=-168.943864, radius=1990.0),
-            Checkpoint(latitude=-62.052286, longitude=169.214572, radius=50.0),
-            Checkpoint(latitude=-15.668984, longitude=77.674694, radius=1190.0),
-            Checkpoint(latitude=-39.438937, longitude=19.836265, radius=50.0),
-            Checkpoint(latitude=14.881699, longitude=-21.024326, radius=50.0),
-            Checkpoint(latitude=44.076538, longitude=-18.292936, radius=50.0),
-            Checkpoint(
-                latitude=config.start.latitude,
-                longitude=config.start.longitude,
-                radius=5,
-            ),
         ]
 
     def run(
@@ -107,6 +111,7 @@ class Bot:
             latitudes=latitude, longitudes=longitude, times=0
         )
         current_position_terrain = world_map(latitudes=latitude, longitudes=longitude)
+        print(current_position_forecast, current_position_terrain)
         # ===========================================================
 
         # Go through all checkpoints and find the next one to reach
@@ -118,12 +123,7 @@ class Bot:
                 longitude2=ch.longitude,
                 latitude2=ch.latitude,
             )
-            # Consider slowing down if the checkpoint is close
-            jump = dt * np.linalg.norm(speed)
-            if dist < 2.0 * ch.radius + jump:
-                instructions.sail = min(ch.radius / jump, 1)
-            else:
-                instructions.sail = 1.0
+            instructions.sail = 1.0
             # Check if the checkpoint has been reached
             if dist < ch.radius:
                 ch.reached = True
