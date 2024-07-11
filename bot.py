@@ -39,13 +39,35 @@ def get_wind_angle(v1, v2):
     return angle_degrees
 
 
+def get_course_rating(course, forecast):
+    course_rating = 0
+
+    # Iterate through the course list to calculate direction vectors
+    for i in range(len(course) - 1):
+        current_checkpoint = course[i]
+        next_checkpoint = course[i + 1]
+
+        # Calculate direction vector (delta_latitude, delta_longitude)
+        delta_latitude = next_checkpoint.latitude - current_checkpoint.latitude
+        delta_longitude = next_checkpoint.longitude - current_checkpoint.longitude
+
+        ship_direction_vector = (delta_latitude, delta_longitude)
+        wind_direction_vector = forecast(
+            latitudes=current_checkpoint.latitude, longitudes=current_checkpoint.longitude, times=3
+        )
+        wind_angle = get_wind_angle(ship_direction_vector, wind_direction_vector)
+        if 100 > wind_angle or wind_angle >= 250:
+            course_rating += 1
+    return course_rating
+
+
 class Bot:
     """
     This is the ship-controlling bot that will be instantiated for the competition.
     """
 
     def __init__(self):
-        self.team = "TeamName"  # This is your team name
+        self.team = "Alpitronic"  # This is your team name
         # This is the course that the ship has to follow
         self.course = [
             Checkpoint(latitude=46.51526380018685, longitude=-2.106954221077432, radius=3),
@@ -92,6 +114,36 @@ class Bot:
             ),
         ]
 
+        self.course_north = [
+            Checkpoint(latitude=46.51526380018685, longitude=-2.106954221077432, radius=3),
+            Checkpoint(latitude=47.80314416647888, longitude=-5.052251381828896, radius=10),
+            Checkpoint(latitude=59.47704024721139, longitude=-45.43535463804069, radius=10),
+            Checkpoint(latitude=61.29777135363086, longitude=-50.50614648992773, radius=10),
+            Checkpoint(latitude=74.01161191565813, longitude=-78.7927999147886, radius=10),
+            Checkpoint(latitude=74.25173507721656, longitude=-96.65858010074633, radius=10),
+            Checkpoint(latitude=73.72498541615348, longitude=-111.926159581506, radius=10),
+            Checkpoint(latitude=74.40777471749568, longitude=-115.8822170582781, radius=10),
+            Checkpoint(latitude=74.75897704017419, longitude=-120.1465931751061, radius=10),
+            Checkpoint(latitude=75.04381102956535, longitude=-125.4345462396673, radius=10),
+            Checkpoint(latitude=71.40547802179384, longitude=-127.951341529295, radius=10),
+            Checkpoint(latitude=69.83455259335703, longitude=-137.1310063552145, radius=10),
+            Checkpoint(latitude=70.73255432537843, longitude=-148.2239948674155, radius=10),
+            Checkpoint(latitude=71.70038417142847, longitude=-157.2544217758774, radius=10),
+            Checkpoint(latitude=69.35823694650743, longitude=-166.6847073961097, radius=10),
+            Checkpoint(latitude=65.04357281610142, longitude=-169.891701898396, radius=10),
+            Checkpoint(latitude=62.75645054920246, longitude=-167.6184920731297, radius=10),
+            Checkpoint(latitude=48.69476863709392, longitude=-170.0381425172147, radius=10),
+            Checkpoint(latitude=2.806318, longitude=-168.943864, radius=1990.0),
+        ]
+
+        self.course_panama = [
+            Checkpoint(latitude=46.47535337182985, longitude=-1.987242046570165, radius=1),
+            Checkpoint(latitude=17.75395401995559, longitude=-68.53393421733739, radius=1),
+            Checkpoint(latitude=9.596699224197881, longitude=-80.10762674052567, radius=1),
+            Checkpoint(latitude=7.995870801960294, longitude=-79.22779328612677, radius=1),
+            Checkpoint(latitude=6.481266459594321, longitude=-80.24932074214756, radius=1),
+            Checkpoint(latitude=20.2091231357451, longitude=-160.6906302734677, radius=1),
+        ]
 
     def run(
             self,
@@ -158,8 +210,14 @@ class Bot:
             latitudes=latitude, longitudes=longitude, times=0
         )
         current_position_terrain = world_map(latitudes=latitude, longitudes=longitude)
-        print(current_position_forecast, current_position_terrain)
         # ===========================================================
+
+        # Get the course rating
+        course_rating_north = get_course_rating(self.course_north, forecast)
+        course_rating_panama = get_course_rating(self.course_panama, forecast)
+
+        print(course_rating_north)
+        print(course_rating_panama)
 
         # Go through all checkpoints and find the next one to reach
         for ch in self.course:
@@ -178,11 +236,11 @@ class Bot:
                 instructions.location = Location(
                     longitude=ch.longitude, latitude=ch.latitude
                 )
-                #instructions.vector = Vector(
+                # instructions.vector = Vector(
                 #    u=current_position_forecast[0], v=current_position_forecast[1]
-                #)
+                # )
                 wind_angle = get_wind_angle(vector, current_position_forecast)
-                print(wind_angle)
+                # print(wind_angle)
                 break
 
         return instructions
