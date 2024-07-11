@@ -145,6 +145,24 @@ class Bot:
             Checkpoint(latitude=20.2091231357451, longitude=-160.6906302734677, radius=1),
         ]
 
+        self.course_africa = [
+            Checkpoint(latitude=-26.07054118970986, longitude=78.46317951458205, radius=1),
+            Checkpoint(latitude=-35.32062651166562, longitude=19.53555696979674, radius=1),
+            Checkpoint(latitude=-27.42173887701961, longitude=8.350838225735009, radius=1),
+            Checkpoint(latitude=-22.83782966931161, longitude=1.982791199153668, radius=1),
+            Checkpoint(latitude=-18.62367021538959, longitude=-1.055029937010538, radius=1),
+            Checkpoint(latitude=-13.2965800325019, longitude=-5.032688256369909, radius=1),
+            Checkpoint(latitude=-6.422589928571089, longitude=-10.27937350806072, radius=1),
+            Checkpoint(latitude=5.293725030988, longitude=-15.62251810683692, radius=1),
+            Checkpoint(latitude=11.3810274828825, longitude=-17.26259791098631, radius=1),
+            Checkpoint(latitude=15.31458108514697, longitude=-18.01921881728018, radius=1),
+            Checkpoint(latitude=22.42069697885395, longitude=-17.67664466009914, radius=1),
+            Checkpoint(latitude=30.83390208272943, longitude=-15.15972978812508, radius=1),
+            Checkpoint(latitude=40.52965656110901, longitude=-11.73129079248653, radius=1),
+            Checkpoint(latitude=43.99159668511461, longitude=-9.177396817251386, radius=1),
+            Checkpoint(latitude=43.41671723878878, longitude=-9.59315063982473, radius=1),
+        ]
+
     def run(
             self,
             t: float,
@@ -213,12 +231,16 @@ class Bot:
         # ===========================================================
 
         # Get the course rating
-        course_rating_north = get_course_rating(self.course_north, forecast)
-        course_rating_panama = get_course_rating(self.course_panama, forecast)
+        course_rating_north = get_course_rating(self.course_north, forecast) / len(self.course_north)
+        course_rating_panama = get_course_rating(self.course_panama, forecast) / len(self.course_panama)
 
-        print(course_rating_north)
-        print(course_rating_panama)
+        #print(course_rating_panama, course_rating_north)
 
+        #if course_rating_north > course_rating_panama:
+        #    self.course = self.course_north
+        #else:
+        #    self.course = self.course_panama
+        self.course = self.course_africa
         # Go through all checkpoints and find the next one to reach
         for ch in self.course:
             # Compute the distance to the checkpoint
