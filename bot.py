@@ -16,6 +16,29 @@ from vendeeglobe import (
 from vendeeglobe.utils import distance_on_surface
 
 
+def get_wind_angle(v1, v2):
+    # Calculate dot product of v1 and v2
+    dot_product = np.dot(v1, v2)
+
+    # Calculate magnitudes of v1 and v2
+    magnitude_v1 = np.linalg.norm(v1)
+    magnitude_v2 = np.linalg.norm(v2)
+
+    # Calculate the cosine of the angle
+    cos_angle = dot_product / (magnitude_v1 * magnitude_v2)
+
+    # Ensure the cosine value is within the valid range for arccos to avoid numerical errors
+    cos_angle = np.clip(cos_angle, -1.0, 1.0)
+
+    # Calculate the angle in radians
+    angle_radians = np.arccos(cos_angle)
+
+    # Convert the angle to degrees
+    angle_degrees = np.degrees(angle_radians)
+
+    return angle_degrees
+
+
 class Bot:
     """
     This is the ship-controlling bot that will be instantiated for the competition.
@@ -47,16 +70,16 @@ class Bot:
         ]
 
     def run(
-        self,
-        t: float,
-        dt: float,
-        longitude: float,
-        latitude: float,
-        heading: float,
-        speed: float,
-        vector: np.ndarray,
-        forecast: Callable,
-        world_map: Callable,
+            self,
+            t: float,
+            dt: float,
+            longitude: float,
+            latitude: float,
+            heading: float,
+            speed: float,
+            vector: np.ndarray,
+            forecast: Callable,
+            world_map: Callable,
     ) -> Instructions:
         """
         This is the method that will be called at every time step to get the
@@ -131,6 +154,11 @@ class Bot:
                 instructions.location = Location(
                     longitude=ch.longitude, latitude=ch.latitude
                 )
+                #instructions.vector = Vector(
+                #    u=current_position_forecast[0], v=current_position_forecast[1]
+                #)
+                wind_angle = get_wind_angle(vector, current_position_forecast)
+                print(wind_angle)
                 break
 
         return instructions
