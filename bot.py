@@ -78,8 +78,8 @@ class Bot:
         # This is the course that the ship has to follow
 
         self.course_indochinesien = [
-            Checkpoint(latitude=3.783378485018821, longitude=120.2750675981632, radius=1),
-            Checkpoint(latitude=-4.371808511810304, longitude=116.3937656707797, radius=1),
+            Checkpoint(latitude=3.793378485018821, longitude=120.0750675981632, radius=1),
+            Checkpoint(latitude=-4.371808511810304, longitude=117.0937656707797, radius=1),
             Checkpoint(latitude=-4.629279687584559, longitude=114.4115097858007, radius=1),
             Checkpoint(latitude=-5.764862726763404, longitude=106.0386820822321, radius=1),
             Checkpoint(latitude=-6.11001139609985, longitude=105.7870113471664, radius=1),
@@ -132,7 +132,7 @@ class Bot:
             Checkpoint(latitude=65.04357281610142, longitude=-169.891701898396, radius=10),
             Checkpoint(latitude=62.75645054920246, longitude=-167.6184920731297, radius=10),
             Checkpoint(latitude=48.69476863709392, longitude=-170.0381425172147, radius=10),
-            Checkpoint(latitude=15.9091231357451, longitude=-178.6906302734677, radius=1),
+            Checkpoint(latitude=16.3091231357451, longitude=-178.6906302734677, radius=1),
         ]
 
     def run(
