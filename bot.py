@@ -76,27 +76,9 @@ class Bot:
         self.team = "Alpitronic"  # This is your team name
         self.course_rating_done = False
         # This is the course that the ship has to follow
-        self.course = [
-            Checkpoint(latitude=46.51526380018685, longitude=-2.106954221077432, radius=3),
-            Checkpoint(latitude=47.80314416647888, longitude=-5.052251381828896, radius=10),
-            Checkpoint(latitude=59.47704024721139, longitude=-45.43535463804069, radius=10),
-            Checkpoint(latitude=61.29777135363086, longitude=-50.50614648992773, radius=10),
-            Checkpoint(latitude=74.01161191565813, longitude=-78.7927999147886, radius=10),
-            Checkpoint(latitude=74.25173507721656, longitude=-96.65858010074633, radius=10),
-            Checkpoint(latitude=73.72498541615348, longitude=-111.926159581506, radius=10),
-            Checkpoint(latitude=74.40777471749568, longitude=-115.8822170582781, radius=10),
-            Checkpoint(latitude=74.75897704017419, longitude=-120.1465931751061, radius=10),
-            Checkpoint(latitude=75.04381102956535, longitude=-125.4345462396673, radius=10),
-            Checkpoint(latitude=71.40547802179384, longitude=-127.951341529295, radius=10),
-            Checkpoint(latitude=69.83455259335703, longitude=-137.1310063552145, radius=10),
-            Checkpoint(latitude=70.73255432537843, longitude=-148.2239948674155, radius=10),
-            Checkpoint(latitude=71.70038417142847, longitude=-157.2544217758774, radius=10),
-            Checkpoint(latitude=69.35823694650743, longitude=-166.6847073961097, radius=10),
-            Checkpoint(latitude=65.04357281610142, longitude=-169.891701898396, radius=10),
-            Checkpoint(latitude=62.75645054920246, longitude=-167.6184920731297, radius=10),
-            Checkpoint(latitude=48.69476863709392, longitude=-170.0381425172147, radius=10),
-            Checkpoint(latitude=2.806318, longitude=-168.943864, radius=1990.0),
-            Checkpoint(latitude=2.783378485018821, longitude=120.2750675981632, radius=1),
+
+        self.course_indochinesien = [
+            Checkpoint(latitude=3.783378485018821, longitude=120.2750675981632, radius=1),
             Checkpoint(latitude=-4.371808511810304, longitude=116.3937656707797, radius=1),
             Checkpoint(latitude=-4.629279687584559, longitude=114.4115097858007, radius=1),
             Checkpoint(latitude=-5.764862726763404, longitude=106.0386820822321, radius=1),
@@ -104,6 +86,9 @@ class Bot:
             Checkpoint(latitude=-6.29742096732878, longitude=105.5319416909656, radius=1),
             Checkpoint(latitude=-6.114084860396257, longitude=104.6250388648793, radius=1),
             Checkpoint(latitude=-6.022524480367786, longitude=80.03577043127072, radius=1),
+        ]
+
+        self.course_saudicalabrien = [
             Checkpoint(latitude=12.32364950720728, longitude=51.06186749020405, radius=1),
             Checkpoint(latitude=11.68438658686913, longitude=43.91390326465574, radius=1),
             Checkpoint(latitude=29.07795456671188, longitude=32.82494554815788, radius=1),
@@ -119,6 +104,12 @@ class Bot:
                 longitude=config.start.longitude,
                 radius=1,
             ),
+        ]
+
+
+        self.course_panama = [
+            Checkpoint(latitude=13, longitude=192, radius=1),
+            Checkpoint(latitude=13, longitude=12, radius=1)
         ]
 
         self.course_north = [
@@ -141,45 +132,7 @@ class Bot:
             Checkpoint(latitude=65.04357281610142, longitude=-169.891701898396, radius=10),
             Checkpoint(latitude=62.75645054920246, longitude=-167.6184920731297, radius=10),
             Checkpoint(latitude=48.69476863709392, longitude=-170.0381425172147, radius=10),
-            Checkpoint(latitude=2.806318, longitude=-168.943864, radius=1990.0),
-        ]
-
-        self.course_panama = [
-            # 18000KM
-            Checkpoint(latitude=46.47535337182985, longitude=-1.987242046570165, radius=1),
-            Checkpoint(latitude=17.75395401995559, longitude=-68.53393421733739, radius=1),
-            Checkpoint(latitude=9.596699224197881, longitude=-80.10762674052567, radius=1),
-            Checkpoint(latitude=7.995870801960294, longitude=-79.22779328612677, radius=1),
-            Checkpoint(latitude=6.481266459594321, longitude=-80.24932074214756, radius=1),
-            Checkpoint(latitude=20.2091231357451, longitude=-160.6906302734677, radius=1),
-        ]
-
-        self.course_australia = [
-            # 21000KM
-            Checkpoint(latitude=-22.3682399229219, longitude=169.7716302925487, radius=1),
-            Checkpoint(latitude=-38.89756012433131, longitude=148.6584464632712, radius=1),
-            Checkpoint(latitude=-39.43712291429078, longitude=146.9397239577109, radius=1),
-            Checkpoint(latitude=-39.71964415915588, longitude=146.6436592429874, radius=1),
-            Checkpoint(latitude=-38.11473889710815, longitude=139.7076193078962, radius=1),
-            Checkpoint(latitude=-34.96547393476094, longitude=114.7356930791068, radius=1),
-        ]
-
-        self.course_africa = [
-            Checkpoint(latitude=-26.07054118970986, longitude=78.46317951458205, radius=1),
-            Checkpoint(latitude=-35.32062651166562, longitude=19.53555696979674, radius=1),
-            Checkpoint(latitude=-27.42173887701961, longitude=8.350838225735009, radius=1),
-            Checkpoint(latitude=-22.83782966931161, longitude=1.982791199153668, radius=1),
-            Checkpoint(latitude=-18.62367021538959, longitude=-1.055029937010538, radius=1),
-            Checkpoint(latitude=-13.2965800325019, longitude=-5.032688256369909, radius=1),
-            Checkpoint(latitude=-6.422589928571089, longitude=-10.27937350806072, radius=1),
-            Checkpoint(latitude=5.293725030988, longitude=-15.62251810683692, radius=1),
-            Checkpoint(latitude=11.3810274828825, longitude=-17.26259791098631, radius=1),
-            Checkpoint(latitude=15.31458108514697, longitude=-18.01921881728018, radius=1),
-            Checkpoint(latitude=22.42069697885395, longitude=-17.67664466009914, radius=1),
-            Checkpoint(latitude=30.83390208272943, longitude=-15.15972978812508, radius=1),
-            Checkpoint(latitude=40.52965656110901, longitude=-11.73129079248653, radius=1),
-            Checkpoint(latitude=43.99159668511461, longitude=-9.177396817251386, radius=1),
-            Checkpoint(latitude=43.41671723878878, longitude=-9.59315063982473, radius=1),
+            Checkpoint(latitude=15.9091231357451, longitude=-178.6906302734677, radius=1),
         ]
 
     def run(
@@ -249,19 +202,19 @@ class Bot:
         current_position_terrain = world_map(latitudes=latitude, longitudes=longitude)
         # ===========================================================
 
-        if not self.course_rating_done:
-            # Get the course rating
-            print("Course rating north")
-            course_rating_north = get_course_rating(self.course_north, forecast)
-            print("Course rating panama")
-            course_rating_panama = get_course_rating(self.course_panama, forecast)
-            print(f"North: {course_rating_north}, Panama: {course_rating_panama}")
-            if course_rating_north > course_rating_panama:
-                self.course = self.course_north
-            else:
-                self.course = self.course_panama
-            self.course_rating_done = True
-        self.course = self.course_north
+        # if not self.course_rating_done:
+        #     # Get the course rating
+        #     print("Course rating north")
+        #     course_rating_north = get_course_rating(self.course_north, forecast)
+        #     print("Course rating panama")
+        #     course_rating_panama = get_course_rating(self.course_panama, forecast)
+        #     print(f"North: {course_rating_north}, Panama: {course_rating_panama}")
+        #     if course_rating_north > course_rating_panama:
+        #         self.course = self.course_north
+        #     else:
+        #         self.course = self.course_panama
+        #     self.course_rating_done = True
+        self.course = self.course_north + self.course_indochinesien + self.course_saudicalabrien
 
         # Go through all checkpoints and find the next one to reach
         for ch in self.course:
