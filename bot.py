@@ -170,11 +170,6 @@ class Bot:
                 instructions.location = Location(
                     longitude=ch.longitude, latitude=ch.latitude
                 )
-                # instructions.vector = Vector(
-                #    u=current_position_forecast[0], v=current_position_forecast[1]
-                # )
-                wind_angle = get_wind_angle(vector, current_position_forecast)
-                # print(wind_angle)
                 break
 
         return instructions
