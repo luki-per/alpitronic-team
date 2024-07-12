@@ -16,57 +16,6 @@ from vendeeglobe import (
 from vendeeglobe.utils import distance_on_surface
 
 
-def get_wind_angle(v1, v2):
-    # Calculate dot product of v1 and v2
-    dot_product = np.dot(v1, v2)
-
-    # Calculate magnitudes of v1 and v2
-    magnitude_v1 = np.linalg.norm(v1)
-    magnitude_v2 = np.linalg.norm(v2)
-
-    # Calculate the cosine of the angle
-    cos_angle = dot_product / (magnitude_v1 * magnitude_v2)
-
-    # Ensure the cosine value is within the valid range for arccos to avoid numerical errors
-    cos_angle = np.clip(cos_angle, -1.0, 1.0)
-
-    # Calculate the angle in radians
-    angle_radians = np.arccos(cos_angle)
-
-    # Convert the angle to degrees
-    angle_degrees = np.degrees(angle_radians)
-
-    return angle_degrees
-
-
-def wind_force(angle):
-    # Calculate wind force based on the given curve
-    return np.abs(np.cos(np.radians(angle)))
-
-
-def get_course_rating(course, forecast):
-    course_rating = 0
-
-    # Iterate through the course list to calculate direction vectors
-    for i in range(len(course) - 1):
-        current_checkpoint = course[i]
-        next_checkpoint = course[i + 1]
-
-        # Calculate direction vector (delta_latitude, delta_longitude)
-        delta_latitude = next_checkpoint.latitude - current_checkpoint.latitude
-        delta_longitude = next_checkpoint.longitude - current_checkpoint.longitude
-
-        ship_direction_vector = (delta_latitude, delta_longitude)
-        wind_direction_vector = forecast(
-            latitudes=current_checkpoint.latitude, longitudes=current_checkpoint.longitude, times=1
-        )
-        wind_angle = get_wind_angle(ship_direction_vector, wind_direction_vector)
-        wind_rating = wind_force(wind_angle)
-        course_rating += wind_rating
-
-    return course_rating / (len(course) - 1)
-
-
 class Bot:
     """
     This is the ship-controlling bot that will be instantiated for the competition.
@@ -202,18 +151,6 @@ class Bot:
         current_position_terrain = world_map(latitudes=latitude, longitudes=longitude)
         # ===========================================================
 
-        # if not self.course_rating_done:
-        #     # Get the course rating
-        #     print("Course rating north")
-        #     course_rating_north = get_course_rating(self.course_north, forecast)
-        #     print("Course rating panama")
-        #     course_rating_panama = get_course_rating(self.course_panama, forecast)
-        #     print(f"North: {course_rating_north}, Panama: {course_rating_panama}")
-        #     if course_rating_north > course_rating_panama:
-        #         self.course = self.course_north
-        #     else:
-        #         self.course = self.course_panama
-        #     self.course_rating_done = True
         self.course = self.course_north + self.course_indochinesien + self.course_saudicalabrien
 
         # Go through all checkpoints and find the next one to reach
